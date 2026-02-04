@@ -1,0 +1,33 @@
+account: "103365315157"
+region: "ap-southeast-2"
+
+namePrefix: "flexis-development"
+vpcCidr: "10.20.0.0/16"
+maxAzs: 2
+natGateways: 1
+publicSubnetMask: 24
+privateSubnetMask: 24
+
+dbName: "flexisorders"
+dbUser: "flexis_admin"
+dbEngineVersion: "15.4"
+dbInstanceClass: "T3"
+dbInstanceSize: "MICRO"
+dbAllocatedStorage: 20
+dbMaxAllocatedStorage: 100
+backupDays: 7
+deletionProtection: false
+
+api:
+  cpu: 256
+  memory: 512
+  desiredCount: 1
+  port: 8080
+  enableExecuteCommand: false
+  enableCircuitBreaker: true
+  circuitBreakerRollback: false
+
+sqs:
+  queueName: "flexis-development-orders-queue"
+  visibilityTimeout: 30
+  retentionDays: 4

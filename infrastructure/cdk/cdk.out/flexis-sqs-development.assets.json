@@ -1,0 +1,21 @@
+{
+  "version": "41.0.0",
+  "files": {
+    "2b42447c848cc3db6946e025c91e5cfe9c167756655436ec52b86841be59b7c0": {
+      "displayName": "flexis-sqs-development Template",
+      "source": {
+        "path": "flexis-sqs-development.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "103365315157-ap-southeast-2": {
+          "bucketName": "cdk-hnb659fds-assets-103365315157-ap-southeast-2",
+          "objectKey": "2b42447c848cc3db6946e025c91e5cfe9c167756655436ec52b86841be59b7c0.json",
+          "region": "ap-southeast-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::103365315157:role/cdk-hnb659fds-file-publishing-role-103365315157-ap-southeast-2"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

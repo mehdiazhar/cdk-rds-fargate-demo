@@ -1,0 +1,717 @@
+{
+ "Resources": {
+  "Vpc8378EB38": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.20.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "Name",
+      "Value": "flexis-development-vpc"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/Resource"
+   }
+  },
+  "VpcflexisdevelopmentpublicSubnet1Subnet3E4BE179": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-southeast-2a",
+    "CidrBlock": "10.20.0.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "flexis-development-public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "Name",
+      "Value": "flexis-vpc-development/Vpc/flexis-development-publicSubnet1"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-publicSubnet1/Subnet"
+   }
+  },
+  "VpcflexisdevelopmentpublicSubnet1RouteTableB682DF7C": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "Name",
+      "Value": "flexis-vpc-development/Vpc/flexis-development-publicSubnet1"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-publicSubnet1/RouteTable"
+   }
+  },
+  "VpcflexisdevelopmentpublicSubnet1RouteTableAssociation4ED3574A": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcflexisdevelopmentpublicSubnet1RouteTableB682DF7C"
+    },
+    "SubnetId": {
+     "Ref": "VpcflexisdevelopmentpublicSubnet1Subnet3E4BE179"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-publicSubnet1/RouteTableAssociation"
+   }
+  },
+  "VpcflexisdevelopmentpublicSubnet1DefaultRoute489BC98D": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "VpcIGWD7BA715C"
+    },
+    "RouteTableId": {
+     "Ref": "VpcflexisdevelopmentpublicSubnet1RouteTableB682DF7C"
+    }
+   },
+   "DependsOn": [
+    "VpcVPCGWBF912B6E"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-publicSubnet1/DefaultRoute"
+   }
+  },
+  "VpcflexisdevelopmentpublicSubnet1EIP617F4314": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "Name",
+      "Value": "flexis-vpc-development/Vpc/flexis-development-publicSubnet1"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-publicSubnet1/EIP"
+   }
+  },
+  "VpcflexisdevelopmentpublicSubnet1NATGateway34CE45C7": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "VpcflexisdevelopmentpublicSubnet1EIP617F4314",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "VpcflexisdevelopmentpublicSubnet1Subnet3E4BE179"
+    },
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "Name",
+      "Value": "flexis-vpc-development/Vpc/flexis-development-publicSubnet1"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ]
+   },
+   "DependsOn": [
+    "VpcflexisdevelopmentpublicSubnet1DefaultRoute489BC98D",
+    "VpcflexisdevelopmentpublicSubnet1RouteTableAssociation4ED3574A"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-publicSubnet1/NATGateway"
+   }
+  },
+  "VpcflexisdevelopmentpublicSubnet2Subnet4FD2A5D1": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-southeast-2b",
+    "CidrBlock": "10.20.1.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "flexis-development-public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "Name",
+      "Value": "flexis-vpc-development/Vpc/flexis-development-publicSubnet2"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-publicSubnet2/Subnet"
+   }
+  },
+  "VpcflexisdevelopmentpublicSubnet2RouteTable5A635D84": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "Name",
+      "Value": "flexis-vpc-development/Vpc/flexis-development-publicSubnet2"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-publicSubnet2/RouteTable"
+   }
+  },
+  "VpcflexisdevelopmentpublicSubnet2RouteTableAssociationD5B636DE": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcflexisdevelopmentpublicSubnet2RouteTable5A635D84"
+    },
+    "SubnetId": {
+     "Ref": "VpcflexisdevelopmentpublicSubnet2Subnet4FD2A5D1"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-publicSubnet2/RouteTableAssociation"
+   }
+  },
+  "VpcflexisdevelopmentpublicSubnet2DefaultRouteE471A88E": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "VpcIGWD7BA715C"
+    },
+    "RouteTableId": {
+     "Ref": "VpcflexisdevelopmentpublicSubnet2RouteTable5A635D84"
+    }
+   },
+   "DependsOn": [
+    "VpcVPCGWBF912B6E"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-publicSubnet2/DefaultRoute"
+   }
+  },
+  "VpcflexisdevelopmentprivateSubnet1Subnet64C4DFDF": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-southeast-2a",
+    "CidrBlock": "10.20.2.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "flexis-development-private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "Name",
+      "Value": "flexis-vpc-development/Vpc/flexis-development-privateSubnet1"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-privateSubnet1/Subnet"
+   }
+  },
+  "VpcflexisdevelopmentprivateSubnet1RouteTable3C35E5FB": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "Name",
+      "Value": "flexis-vpc-development/Vpc/flexis-development-privateSubnet1"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-privateSubnet1/RouteTable"
+   }
+  },
+  "VpcflexisdevelopmentprivateSubnet1RouteTableAssociation0891238A": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcflexisdevelopmentprivateSubnet1RouteTable3C35E5FB"
+    },
+    "SubnetId": {
+     "Ref": "VpcflexisdevelopmentprivateSubnet1Subnet64C4DFDF"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-privateSubnet1/RouteTableAssociation"
+   }
+  },
+  "VpcflexisdevelopmentprivateSubnet1DefaultRouteAA08CB84": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "VpcflexisdevelopmentpublicSubnet1NATGateway34CE45C7"
+    },
+    "RouteTableId": {
+     "Ref": "VpcflexisdevelopmentprivateSubnet1RouteTable3C35E5FB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-privateSubnet1/DefaultRoute"
+   }
+  },
+  "VpcflexisdevelopmentprivateSubnet2Subnet499D0346": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-southeast-2b",
+    "CidrBlock": "10.20.3.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "flexis-development-private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "Name",
+      "Value": "flexis-vpc-development/Vpc/flexis-development-privateSubnet2"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-privateSubnet2/Subnet"
+   }
+  },
+  "VpcflexisdevelopmentprivateSubnet2RouteTableBB5DD624": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "Name",
+      "Value": "flexis-vpc-development/Vpc/flexis-development-privateSubnet2"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-privateSubnet2/RouteTable"
+   }
+  },
+  "VpcflexisdevelopmentprivateSubnet2RouteTableAssociationA4A33468": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcflexisdevelopmentprivateSubnet2RouteTableBB5DD624"
+    },
+    "SubnetId": {
+     "Ref": "VpcflexisdevelopmentprivateSubnet2Subnet499D0346"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-privateSubnet2/RouteTableAssociation"
+   }
+  },
+  "VpcflexisdevelopmentprivateSubnet2DefaultRouteE694A2E7": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "VpcflexisdevelopmentpublicSubnet1NATGateway34CE45C7"
+    },
+    "RouteTableId": {
+     "Ref": "VpcflexisdevelopmentprivateSubnet2RouteTableBB5DD624"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/flexis-development-privateSubnet2/DefaultRoute"
+   }
+  },
+  "VpcIGWD7BA715C": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "Name",
+      "Value": "flexis-development-vpc"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/IGW"
+   }
+  },
+  "VpcVPCGWBF912B6E": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "InternetGatewayId": {
+     "Ref": "VpcIGWD7BA715C"
+    },
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/Vpc/VPCGW"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/0WOQQuCQBSEf4v3dVM7dRSJ8FKLhtd4bi/c1F1x3yYi/vcwQ08z8zEME/HwFPLAg8H68ln7jSr5lBPImsFgHygjPhWdZMlLFyJhwpWNkrkrNdLCdpcZR3iHssGd7yy21kgFpIzeyos5p2KRK9AFCAcYmejVBwj34VQT9hq3wvrkn2IikFWLmmaWoTWul7/dm6PO0czESJXRhyMPAx54b6uU3ztNqkWerfoFPj2+jwEBAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-vpc-development/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "VpcId": {
+   "Value": {
+    "Ref": "Vpc8378EB38"
+   },
+   "Export": {
+    "Name": "flexis-vpc-development-vpc-id"
+   }
+  },
+  "PublicSubnetIds": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      {
+       "Ref": "VpcflexisdevelopmentpublicSubnet1Subnet3E4BE179"
+      },
+      ",",
+      {
+       "Ref": "VpcflexisdevelopmentpublicSubnet2Subnet4FD2A5D1"
+      }
+     ]
+    ]
+   },
+   "Export": {
+    "Name": "flexis-vpc-development-public-subnet-ids"
+   }
+  },
+  "PrivateSubnetIds": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      {
+       "Ref": "VpcflexisdevelopmentprivateSubnet1Subnet64C4DFDF"
+      },
+      ",",
+      {
+       "Ref": "VpcflexisdevelopmentprivateSubnet2Subnet499D0346"
+      }
+     ]
+    ]
+   },
+   "Export": {
+    "Name": "flexis-vpc-development-private-subnet-ids"
+   }
+  },
+  "ExportsOutputRefVpc8378EB38272D6E3A": {
+   "Value": {
+    "Ref": "Vpc8378EB38"
+   },
+   "Export": {
+    "Name": "flexis-vpc-development:ExportsOutputRefVpc8378EB38272D6E3A"
+   }
+  },
+  "ExportsOutputRefVpcflexisdevelopmentprivateSubnet1Subnet64C4DFDFFF57E268": {
+   "Value": {
+    "Ref": "VpcflexisdevelopmentprivateSubnet1Subnet64C4DFDF"
+   },
+   "Export": {
+    "Name": "flexis-vpc-development:ExportsOutputRefVpcflexisdevelopmentprivateSubnet1Subnet64C4DFDFFF57E268"
+   }
+  },
+  "ExportsOutputRefVpcflexisdevelopmentprivateSubnet2Subnet499D0346695584DE": {
+   "Value": {
+    "Ref": "VpcflexisdevelopmentprivateSubnet2Subnet499D0346"
+   },
+   "Export": {
+    "Name": "flexis-vpc-development:ExportsOutputRefVpcflexisdevelopmentprivateSubnet2Subnet499D0346695584DE"
+   }
+  },
+  "ExportsOutputRefVpcflexisdevelopmentpublicSubnet1Subnet3E4BE1798A428C14": {
+   "Value": {
+    "Ref": "VpcflexisdevelopmentpublicSubnet1Subnet3E4BE179"
+   },
+   "Export": {
+    "Name": "flexis-vpc-development:ExportsOutputRefVpcflexisdevelopmentpublicSubnet1Subnet3E4BE1798A428C14"
+   }
+  },
+  "ExportsOutputRefVpcflexisdevelopmentpublicSubnet2Subnet4FD2A5D1B615790B": {
+   "Value": {
+    "Ref": "VpcflexisdevelopmentpublicSubnet2Subnet4FD2A5D1"
+   },
+   "Export": {
+    "Name": "flexis-vpc-development:ExportsOutputRefVpcflexisdevelopmentpublicSubnet2Subnet4FD2A5D1B615790B"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

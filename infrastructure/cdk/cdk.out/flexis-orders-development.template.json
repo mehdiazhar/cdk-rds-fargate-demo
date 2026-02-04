@@ -1,0 +1,610 @@
+{
+ "Resources": {
+  "ImportedEcsAppSgfromflexisordersdevelopmentImportedAlbSg0D2943FD80806746FF0C": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Load balancer to target",
+    "FromPort": 8080,
+    "GroupId": {
+     "Fn::ImportValue": "flexis-sg-development-ecs-sg-id"
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::ImportValue": "flexis-sg-development-alb-sg-id"
+    },
+    "ToPort": 8080
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-orders-development/ImportedEcsAppSg/from flexisordersdevelopmentImportedAlbSg0D2943FD:8080"
+   }
+  },
+  "TaskRole30FC0FBB": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-orders-development/TaskRole/Resource"
+   }
+  },
+  "TaskRoleDefaultPolicy07FC53DE": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:GetQueueUrl",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "flexis-orders-development-queue-arn"
+       }
+      },
+      {
+       "Action": [
+        "sqs:SendMessage",
+        "sqs:GetQueueAttributes",
+        "sqs:GetQueueUrl"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "flexis-orders-development-queue-arn"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "TaskRoleDefaultPolicy07FC53DE",
+    "Roles": [
+     {
+      "Ref": "TaskRole30FC0FBB"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-orders-development/TaskRole/DefaultPolicy/Resource"
+   }
+  },
+  "ExecutionRole605A040B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-orders-development/ExecutionRole/Resource"
+   }
+  },
+  "ExecutionRoleDefaultPolicyA5B92313": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "flexis-rds-development-secret-arn"
+       }
+      },
+      {
+       "Action": [
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":ecr:ap-southeast-2:103365315157:repository/cdk-hnb659fds-container-assets-103365315157-ap-southeast-2"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": "ecr:GetAuthorizationToken",
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "OrdersLogGroup507704C6",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ExecutionRoleDefaultPolicyA5B92313",
+    "Roles": [
+     {
+      "Ref": "ExecutionRole605A040B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-orders-development/ExecutionRole/DefaultPolicy/Resource"
+   }
+  },
+  "TaskDefinitionB36D86D9": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "DB_HOST",
+        "Value": {
+         "Fn::ImportValue": "flexis-rds-development-endpoint"
+        }
+       },
+       {
+        "Name": "DB_PORT",
+        "Value": {
+         "Fn::ImportValue": "flexis-rds-development-port"
+        }
+       },
+       {
+        "Name": "DB_NAME",
+        "Value": {
+         "Fn::ImportValue": "flexis-rds-development-dbname"
+        }
+       },
+       {
+        "Name": "DB_USER",
+        "Value": "flexis_admin"
+       },
+       {
+        "Name": "SQS_QUEUE_URL",
+        "Value": {
+         "Fn::ImportValue": "flexis-orders-development-queue-url"
+        }
+       }
+      ],
+      "Essential": true,
+      "Image": {
+       "Fn::Sub": "103365315157.dkr.ecr.ap-southeast-2.${AWS::URLSuffix}/cdk-hnb659fds-container-assets-103365315157-ap-southeast-2:bd10cc278454600075fcff480c554d0a26d7613552cb54d2bbdaddac8f3e33bc"
+      },
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "OrdersLogGroup507704C6"
+        },
+        "awslogs-stream-prefix": "orders",
+        "awslogs-region": "ap-southeast-2"
+       }
+      },
+      "Name": "api",
+      "PortMappings": [
+       {
+        "ContainerPort": 8080,
+        "Protocol": "tcp"
+       }
+      ],
+      "Secrets": [
+       {
+        "Name": "DB_PASSWORD",
+        "ValueFrom": {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "flexis-rds-development-secret-arn"
+           },
+           ":password::"
+          ]
+         ]
+        }
+       }
+      ]
+     }
+    ],
+    "Cpu": "256",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "ExecutionRole605A040B",
+      "Arn"
+     ]
+    },
+    "Family": "flexisordersdevelopmentTaskDefinition895997E9",
+    "Memory": "512",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "TaskRole30FC0FBB",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-orders-development/TaskDefinition/Resource"
+   }
+  },
+  "OrdersLogGroup507704C6": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "flexis-orders-development/OrdersLogGroup/Resource"
+   }
+  },
+  "OrdersService70141735": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Fn::ImportValue": "flexis-ecs-development-cluster-name"
+    },
+    "DeploymentConfiguration": {
+     "DeploymentCircuitBreaker": {
+      "Enable": true,
+      "Rollback": false
+     }
+    },
+    "DesiredCount": 1,
+    "EnableECSManagedTags": false,
+    "EnableExecuteCommand": false,
+    "HealthCheckGracePeriodSeconds": 60,
+    "LaunchType": "FARGATE",
+    "LoadBalancers": [
+     {
+      "ContainerName": "api",
+      "ContainerPort": 8080,
+      "TargetGroupArn": {
+       "Ref": "OrdersTargetGroup0E9DF741"
+      }
+     }
+    ],
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::ImportValue": "flexis-sg-development-ecs-sg-id"
+       }
+      ],
+      "Subnets": [
+       {
+        "Fn::ImportValue": "flexis-vpc-development:ExportsOutputRefVpcflexisdevelopmentprivateSubnet1Subnet64C4DFDFFF57E268"
+       },
+       {
+        "Fn::ImportValue": "flexis-vpc-development:ExportsOutputRefVpcflexisdevelopmentprivateSubnet2Subnet499D0346695584DE"
+       }
+      ]
+     }
+    },
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ],
+    "TaskDefinition": {
+     "Ref": "TaskDefinitionB36D86D9"
+    }
+   },
+   "DependsOn": [
+    "OrdersAlbHttpListenerE16C18A2",
+    "TaskRoleDefaultPolicy07FC53DE",
+    "TaskRole30FC0FBB"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "flexis-orders-development/OrdersService/Service"
+   }
+  },
+  "OrdersAlb6BC04FED": {
+   "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+   "Properties": {
+    "LoadBalancerAttributes": [
+     {
+      "Key": "deletion_protection.enabled",
+      "Value": "false"
+     }
+    ],
+    "Name": "flexis-development-alb",
+    "Scheme": "internet-facing",
+    "SecurityGroups": [
+     {
+      "Fn::ImportValue": "flexis-sg-development-alb-sg-id"
+     }
+    ],
+    "Subnets": [
+     {
+      "Fn::ImportValue": "flexis-vpc-development:ExportsOutputRefVpcflexisdevelopmentpublicSubnet1Subnet3E4BE1798A428C14"
+     },
+     {
+      "Fn::ImportValue": "flexis-vpc-development:ExportsOutputRefVpcflexisdevelopmentpublicSubnet2Subnet4FD2A5D1B615790B"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ],
+    "Type": "application"
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-orders-development/OrdersAlb/Resource"
+   }
+  },
+  "OrdersAlbHttpListenerE16C18A2": {
+   "Type": "AWS::ElasticLoadBalancingV2::Listener",
+   "Properties": {
+    "DefaultActions": [
+     {
+      "TargetGroupArn": {
+       "Ref": "OrdersTargetGroup0E9DF741"
+      },
+      "Type": "forward"
+     }
+    ],
+    "LoadBalancerArn": {
+     "Ref": "OrdersAlb6BC04FED"
+    },
+    "Port": 80,
+    "Protocol": "HTTP"
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-orders-development/OrdersAlb/HttpListener/Resource"
+   }
+  },
+  "OrdersTargetGroup0E9DF741": {
+   "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+   "Properties": {
+    "HealthCheckPath": "/health",
+    "Matcher": {
+     "HttpCode": "200"
+    },
+    "Name": "flexis-development-tg",
+    "Port": 8080,
+    "Protocol": "HTTP",
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ],
+    "TargetGroupAttributes": [
+     {
+      "Key": "stickiness.enabled",
+      "Value": "false"
+     }
+    ],
+    "TargetType": "ip",
+    "VpcId": {
+     "Fn::ImportValue": "flexis-vpc-development:ExportsOutputRefVpc8378EB38272D6E3A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-orders-development/OrdersTargetGroup/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/11PS2/CMAz+LdxDBuy0Iw9tQkIaa7kjE0zwGpIudkBV1f8+pcBU7eTvZefLTE/fpnoyghuPzbEaOzrothQwlSqQQ4oGFdx436KZ6eXJl2hSJGk+Ykj12tuIzIp/WH8lTLgARkVw0W0RHKrlyfdzGxyZJtM76hQa1u07RAuCO+BqhSfyJBR8Tv1Xghcgj3GgPXZLjFcy/UsPmG/HPTCjsF4FU2FcX8DiPCvZ0wXWgUlCbPq6LljW7SbY/kv50hN3Ch2wkHEBjgdw4A15e53pdl7XjgzkJpsAx0XvYbwvD/gwRyzoH5knHvg7iBblr8OAdp3qy5cClrzN7meSOkmnto2cg3951dOJnoy+mWgckxe6oC7u8xfcuLCu4AEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-orders-development/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "AlbDns": {
+   "Value": {
+    "Fn::GetAtt": [
+     "OrdersAlb6BC04FED",
+     "DNSName"
+    ]
+   },
+   "Export": {
+    "Name": "flexis-orders-development-alb-dns"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

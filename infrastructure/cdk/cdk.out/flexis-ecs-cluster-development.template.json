@@ -1,0 +1,95 @@
+{
+ "Resources": {
+  "ClusterEB0386A7": {
+   "Type": "AWS::ECS::Cluster",
+   "Properties": {
+    "ClusterName": "flexis-development-cluster",
+    "Tags": [
+     {
+      "Key": "application",
+      "Value": "flexischools"
+     },
+     {
+      "Key": "environment",
+      "Value": "development"
+     },
+     {
+      "Key": "owner",
+      "Value": "devops@flexischools.com"
+     },
+     {
+      "Key": "product",
+      "Value": "flexischools"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-ecs-cluster-development/Cluster/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zPSM7Q01DNQTCwv1k1OydbNyUzSqw4uSUzO1glKLc4vLUpO1UksL45PTS7Wq3bOKS0uSS3ScU7LgzJrQWz/0pKC0pJanYDKkoz8PH1jPUMDPQPFrOLMTN2i0rySzNxUvSAIDQBsThKZbgAAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "flexis-ecs-cluster-development/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "ClusterArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ClusterEB0386A7",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "flexis-ecs-development-cluster-arn"
+   }
+  },
+  "ClusterName": {
+   "Value": {
+    "Ref": "ClusterEB0386A7"
+   },
+   "Export": {
+    "Name": "flexis-ecs-development-cluster-name"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
