@@ -1,3 +1,0 @@
-aws-cdk-lib==2.236.0
-constructs==10.4.4
-pyyaml

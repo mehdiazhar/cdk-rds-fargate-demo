@@ -48,7 +48,7 @@ api:
   memory: 512
   desiredCount: 1
   port: 8080
-  enableExecuteCommand: false
+  enableExecuteCommand: true
   enableCircuitBreaker: true
   circuitBreakerRollback: false
 

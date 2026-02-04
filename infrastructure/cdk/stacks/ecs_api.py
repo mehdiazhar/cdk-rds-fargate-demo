@@ -93,7 +93,8 @@ class FlexiOrderApiStack(Stack):
         container_port = int(api_cfg.get("port", 8080))
         enable_exec = bool(api_cfg.get("enableExecuteCommand", False))
         enable_cb = bool(api_cfg.get("enableCircuitBreaker", True))
-        cb_rollback = bool(api_cfg.get("circuitBreakerRollback", False))
+        # Never roll back automatically; keep failed tasks around for debugging.
+        cb_rollback = False
 
         queue_arn = Fn.import_value(f"flexis-orders-{env_name}-queue-arn")
         queue_url = Fn.import_value(f"flexis-orders-{env_name}-queue-url")
@@ -131,6 +132,10 @@ class FlexiOrderApiStack(Stack):
             memory_limit_mib=memory,
             task_role=task_role,
             execution_role=execution_role,
+            runtime_platform=ecs.RuntimePlatform(
+                cpu_architecture=ecs.CpuArchitecture.ARM64,
+                operating_system_family=ecs.OperatingSystemFamily.LINUX,
+            ),
         )
 
         image_override = api_cfg.get("image")

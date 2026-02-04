@@ -1,0 +1,5 @@
+.history
+infrastructure/cdk/cdk.out
+.cdk.staging
+__pycache__/
+**/__pycache__/
