@@ -13,7 +13,7 @@ def create_public_alb(
     *,
     name_prefix: str,
     vpc: ec2.IVpc,
-    public_subnets: Sequence[ec2.ISubnet],
+    private_subnets: Sequence[ec2.ISubnet],
     alb_sg: ec2.ISecurityGroup,
     ecs_app_sg: ec2.ISecurityGroup,
     service: ecs.FargateService,
@@ -23,10 +23,10 @@ def create_public_alb(
         scope,
         "OrdersAlb",
         vpc=vpc,
-        internet_facing=True,
+        internet_facing=False,
         load_balancer_name=f"{name_prefix}-alb",
         security_group=alb_sg,
-        vpc_subnets=ec2.SubnetSelection(subnets=public_subnets),
+        vpc_subnets=ec2.SubnetSelection(subnets=private_subnets),
     )
 
     listener = alb.add_listener(

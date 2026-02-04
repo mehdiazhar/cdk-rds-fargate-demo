@@ -43,8 +43,8 @@ class FlexiOrderApiStack(Stack):
             private_subnet_ids=config.get("privateSubnetIds", []),
         )
 
-        public_subnets = [
-            ec2.Subnet.from_subnet_id(self, f"PublicSubnet{i+1}", sid)
+        private_subnets = [
+            ec2.Subnet.from_subnet_id(self, f"PrivateSubnet{i+1}", sid)
             for i, sid in enumerate(config.get("publicSubnetIds", []))
         ]
         private_subnets = [
@@ -210,7 +210,7 @@ class FlexiOrderApiStack(Stack):
             self,
             name_prefix=name_prefix,
             vpc=vpc,
-            public_subnets=public_subnets,
+            private_subnets=private_subnets,
             alb_sg=alb_sg,
             ecs_app_sg=ecs_app_sg,
             service=service,
