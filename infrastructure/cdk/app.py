@@ -11,6 +11,7 @@ from stacks.sgs import FlexiSecurityGroupsStack
 from stacks.rds import FlexiPostgresStack
 from stacks.ecs_cluster import FlexiEcsClusterStack
 from stacks.sqs import FlexiSqsStack
+from stacks.alb import FlexiAlbStack
 from stacks.ecs_api import FlexiOrderApiStack
 
 
@@ -94,6 +95,14 @@ sqs_stack = FlexiSqsStack(
     env=env,
 )
 
+alb_stack = FlexiAlbStack(
+    app,
+    f"flexis-alb-{env_name}",
+    env_name=env_name,
+    config=config,
+    env=env,
+)
+
 # ECS service stack
 api_image = app.node.try_get_context("api_image")
 if api_image:
@@ -113,12 +122,15 @@ api_stack.add_dependency(sgs_stack)
 api_stack.add_dependency(rds_stack)
 api_stack.add_dependency(ecs_cluster_stack)
 api_stack.add_dependency(sqs_stack)
+api_stack.add_dependency(alb_stack)
 
 sgs_stack.add_dependency(vpc_stack)
 rds_stack.add_dependency(vpc_stack)
 rds_stack.add_dependency(sgs_stack)
 ecs_cluster_stack.add_dependency(vpc_stack)
 sqs_stack.add_dependency(vpc_stack)
+alb_stack.add_dependency(vpc_stack)
+alb_stack.add_dependency(sgs_stack)
 api_stack.add_dependency(vpc_stack)
 
 # app-level tags (single source of truth)

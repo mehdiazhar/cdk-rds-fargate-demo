@@ -12,12 +12,12 @@ from aws_cdk import (
     aws_iam as iam,
     aws_logs as logs,
     aws_sqs as sqs,
+    aws_elasticloadbalancingv2 as elbv2,
     aws_secretsmanager as secretsmanager,
     Tags,
 )
 from constructs import Construct
 
-from stacks.lb import create_public_alb
 
 
 class FlexiOrderApiStack(Stack):
@@ -39,14 +39,9 @@ class FlexiOrderApiStack(Stack):
             "Vpc",
             vpc_id=config["vpcId"],
             availability_zones=config["availabilityZones"],
-            public_subnet_ids=config.get("publicSubnetIds", []),
             private_subnet_ids=config.get("privateSubnetIds", []),
         )
 
-        private_subnets = [
-            ec2.Subnet.from_subnet_id(self, f"PrivateSubnet{i+1}", sid)
-            for i, sid in enumerate(config.get("publicSubnetIds", []))
-        ]
         private_subnets = [
             ec2.Subnet.from_subnet_id(self, f"PrivateSubnet{i+1}", sid)
             for i, sid in enumerate(config.get("privateSubnetIds", []))
@@ -68,13 +63,6 @@ class FlexiOrderApiStack(Stack):
             security_group_id=Fn.import_value(f"flexis-sg-{env_name}-ecs-sg-id"),
             mutable=True,
         )
-        alb_sg = ec2.SecurityGroup.from_security_group_id(
-            self,
-            "ImportedAlbSg",
-            security_group_id=Fn.import_value(f"flexis-sg-{env_name}-alb-sg-id"),
-            mutable=False,
-        )
-
         db_host = Fn.import_value(f"flexis-rds-{env_name}-endpoint")
         db_port = Fn.import_value(f"flexis-rds-{env_name}-port")
         db_name = Fn.import_value(f"flexis-rds-{env_name}-dbname")
@@ -205,24 +193,6 @@ class FlexiOrderApiStack(Stack):
                         rollback=cb_rollback,
                     )
                 )
-
-        alb = create_public_alb(
-            self,
-            name_prefix=name_prefix,
-            vpc=vpc,
-            private_subnets=private_subnets,
-            alb_sg=alb_sg,
-            ecs_app_sg=ecs_app_sg,
-            service=service,
-            container_port=container_port,
-        )
-
-        CfnOutput(
-            self,
-            "AlbDns",
-            value=alb.load_balancer_dns_name,
-            export_name=f"flexis-orders-{env_name}-alb-dns",
-        )
         Tags.of(self).add("application", "flexischools")
         Tags.of(self).add("environment", env_name)
         Tags.of(self).add("product", "flexischools")

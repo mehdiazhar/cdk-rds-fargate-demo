@@ -56,3 +56,4 @@ sqs:
   queueName: "flexis-development-orders-queue"
   visibilityTimeout: 30
   retentionDays: 4
+  maxReceiveCount: 5

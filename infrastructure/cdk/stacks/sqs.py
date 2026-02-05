@@ -28,12 +28,23 @@ class FlexiSqsStack(Stack):
         visibility_timeout = int(queue_cfg.get("visibilityTimeout", 30))
         retention_days = int(queue_cfg.get("retentionDays", 4))
 
+        dlq = sqs.Queue(
+            self,
+            "OrdersDlq",
+            queue_name=f"{queue_name}-dlq",
+            retention_period=Duration.days(14),
+        )
+
         queue = sqs.Queue(
             self,
             "OrdersQueue",
             queue_name=queue_name,
             visibility_timeout=Duration.seconds(visibility_timeout),
             retention_period=Duration.days(retention_days),
+            dead_letter_queue=sqs.DeadLetterQueue(
+                max_receive_count=int(queue_cfg.get("maxReceiveCount", 5)),
+                queue=dlq,
+            ),
         )
 
         CfnOutput(
@@ -47,6 +58,12 @@ class FlexiSqsStack(Stack):
             "QueueArn",
             value=queue.queue_arn,
             export_name=f"flexis-orders-{env_name}-queue-arn",
+        )
+        CfnOutput(
+            self,
+            "DlqArn",
+            value=dlq.queue_arn,
+            export_name=f"flexis-orders-{env_name}-dlq-arn",
         )
 
         Tags.of(self).add("application", "flexischools")
