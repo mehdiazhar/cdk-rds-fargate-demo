@@ -123,6 +123,6 @@ class FlexiAlbStack(Stack):
             export_name=f"flexis-orders-{env_name}-tg-arn",
         )
 
-        Tags.of(self).add("application", "flexischools")
+        Tags.of(self).add("application", "flexicx")
         Tags.of(self).add("environment", env_name)
-        Tags.of(self).add("product", "flexischools")
+        Tags.of(self).add("product", "flexicx")

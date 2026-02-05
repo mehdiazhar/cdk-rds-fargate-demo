@@ -1,6 +1,6 @@
-# flexischools order processing cdk
+# flexicx order processing cdk
 
-This CDK app provisions a simple sandbox stack set for Flexischools:
+This CDK app provisions a simple sandbox stack set for Flexicx:
 - RDS Postgres instance
 - ECS Fargate service + ALB
 - SQS queue
@@ -11,7 +11,7 @@ Config is YAML-based to keep environment settings easy to edit.
 ## Layout
 
 ```text
-flexischools/infrastructure/cdk/
+flexicx/infrastructure/cdk/
   app.py
   cdk.json
   stacks/

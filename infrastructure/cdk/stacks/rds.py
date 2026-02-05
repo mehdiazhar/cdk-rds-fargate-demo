@@ -101,13 +101,13 @@ class FlexiPostgresStack(Stack):
             self,
             "ClusterParameterGroup",
             engine=engine,
-            description=f"flexischools aurora postgres {env_name} cluster parameters",
+            description=f"flexicx aurora postgres {env_name} cluster parameters",
             parameters=parameters,
         )
 
         credentials = rds.Credentials.from_generated_secret(
             username=db_user,
-            secret_name=f"flexischools/{env_name}/aurora-postgres/admin",
+            secret_name=f"flexicx/{env_name}/aurora-postgres/admin",
         )
 
         writer_instance_type = ec2.InstanceType.of(
@@ -218,6 +218,6 @@ class FlexiPostgresStack(Stack):
             export_name=f"flexis-rds-{env_name}-cluster-id",
         )
 
-        Tags.of(self).add("application", "flexischools")
+        Tags.of(self).add("application", "flexicx")
         Tags.of(self).add("environment", env_name)
-        Tags.of(self).add("product", "flexischools")
+        Tags.of(self).add("product", "flexicx")

@@ -32,7 +32,7 @@ INDEX_HTML = """
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Flexischools Order Processing</title>
+    <title>Flexicx Order Processing</title>
     <style>
       body { font-family: Arial, sans-serif; margin: 32px; }
       h1 { margin-bottom: 8px; }
@@ -47,7 +47,7 @@ INDEX_HTML = """
   </head>
   <body>
     <div class="card">
-      <h1>Flexischools Order Processing</h1>
+      <h1>Flexicx Order Processing</h1>
       <p class="muted">This is a simple demo app that submits orders and pushes them to SQS.</p>
       <form id="order-form">
         <label>Customer Name

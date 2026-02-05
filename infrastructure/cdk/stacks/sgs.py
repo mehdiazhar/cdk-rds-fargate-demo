@@ -38,7 +38,7 @@ class FlexiSecurityGroupsStack(Stack):
             self,
             "RdsSg",
             vpc=vpc,
-            description="Flexischools Postgres",
+            description="Flexicx Postgres",
             allow_all_outbound=True,
             security_group_name=f"{name_prefix}-rds-sg",
         )
@@ -49,7 +49,7 @@ class FlexiSecurityGroupsStack(Stack):
             self,
             "EcsAppSg",
             vpc=vpc,
-            description="Flexischools ECS",
+            description="Flexicx ECS",
             allow_all_outbound=True,
             security_group_name=f"{name_prefix}-ecs-sg",
         )
@@ -60,7 +60,7 @@ class FlexiSecurityGroupsStack(Stack):
             self,
             "AlbSg",
             vpc=vpc,
-            description="Flexischools ALB",
+            description="Flexicx ALB",
             allow_all_outbound=True,
             security_group_name=f"{name_prefix}-alb-sg",
         )
@@ -102,6 +102,6 @@ class FlexiSecurityGroupsStack(Stack):
             export_name=f"flexis-sg-{env_name}-alb-sg-id",
         )
 
-        Tags.of(self).add("application", "flexischools")
+        Tags.of(self).add("application", "flexicx")
         Tags.of(self).add("environment", env_name)
-        Tags.of(self).add("product", "flexischools")
+        Tags.of(self).add("product", "flexicx")

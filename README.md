@@ -1,4 +1,4 @@
-# Flexischools Order Processing (Sandbox)
+# Flexicx Order Processing (Sandbox)
 
 This folder contains a minimal order-processing demo (Flask) plus a Python CDK app that provisions:
 - RDS Postgres (single instance)
@@ -9,7 +9,7 @@ This folder contains a minimal order-processing demo (Flask) plus a Python CDK a
 ## Layout
 
 ```
-flexischools/
+flexicx/
   app.py
   requirements.txt
   infrastructure/
@@ -25,17 +25,17 @@ flexischools/
 
 ## Deploy (CDK)
 
-1. Update the VPC settings in `flexischools/infrastructure/cdk/config/development.yaml` (CIDR, AZs, NAT, subnet masks).
+1. Update the VPC settings in `flexicx/infrastructure/cdk/config/development.yaml` (CIDR, AZs, NAT, subnet masks).
 2. Install dependencies:
    ```sh
-   cd flexischools/infrastructure/cdk
+   cd flexicx/infrastructure/cdk
    python -m venv .venv
    source .venv/bin/activate
    pip install -r requirements.txt
    ```
 3. Bootstrap the sandbox account (first time only):
    ```sh
-   cdk bootstrap aws://103365315157/ap-southeast-2
+   cdk bootstrap aws://719164424367/ap-southeast-2
    ```
 4. Deploy:
    ```sh
@@ -50,7 +50,7 @@ cdk deploy -c env=development -c api_image=public.ecr.aws/your/image:tag
 ## Local run
 
 ```sh
-cd flexischools
+cd flexicx
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -59,7 +59,7 @@ python app.py
 
 Or with Docker:
 ```sh
-cd flexischools/infrastructure/docker
+cd flexicx/infrastructure/docker
 docker compose up --build
 ```
 

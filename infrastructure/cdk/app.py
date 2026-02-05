@@ -134,9 +134,9 @@ alb_stack.add_dependency(sgs_stack)
 api_stack.add_dependency(vpc_stack)
 
 # app-level tags (single source of truth)
-Tags.of(app).add("application", "flexischools")
-Tags.of(app).add("product", "flexischools")
+Tags.of(app).add("application", "flexicx")
+Tags.of(app).add("product", "flexicx")
 Tags.of(app).add("environment", env_name)
-Tags.of(app).add("owner", "devops@flexischools.com")
+Tags.of(app).add("owner", "devops@flexicx.com")
 
 app.synth()
