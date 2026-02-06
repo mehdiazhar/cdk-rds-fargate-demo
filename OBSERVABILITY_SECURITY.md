@@ -24,5 +24,10 @@
 - **Poison messages** -> DLQ + maxReceiveCount; alert on DLQ depth.
 - **Unlogged access** -> Enable ALB access logs + CloudTrail + CloudWatch logs/alarms.
 - **No HTTPS in transit** -> Add ACM cert + HTTPS listener; redirect HTTP to HTTPS.
-- **No VPC endpoints** -> Add VPC endpoints (S3, ECR, SQS, Secrets Manager, CloudWatch Logs) to reduce NAT cost and dependency.
 - **Uncontrolled changes** -> CDK-only changes with CI/CD approvals; deny console changes.
+
+## Improvements (Future Enhancements)
+- **VPC endpoints** -> Add endpoints for S3, ECR, SQS, Secrets Manager, and CloudWatch Logs to cut NAT cost and dependency.
+- **Dedicated ECR stack** -> Add an `ecr.py` stack with lifecycle policies to expire old images.
+- **ECR pull-through cache** -> Enable pull-through cache to reduce egress and speed image pulls.
+

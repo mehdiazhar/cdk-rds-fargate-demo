@@ -96,3 +96,13 @@ stages:
 Notes:
 - Replace `AWS_ACCOUNT_ID` and ensure the pipeline has an AWS service connection.
 - Add manual approvals for staging/prod via Azure DevOps Environments.
+
+## Branching model (Trunk-based)
+- Short-lived feature branches only; merge to `main` via PR after checks pass.
+- `main` is always deployable; CI/CD runs on every merge.
+- Use feature flags for incomplete work to avoid long-lived branches.
+
+## Environment promotion (trunk-based)
+- Build once on `main`, tag image with commit SHA.
+- Promote the same image tag to staging/prod via approvals (no rebuilds).
+- Roll back by redeploying the previous known-good tag.
