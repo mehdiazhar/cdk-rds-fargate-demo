@@ -24,4 +24,5 @@
 - **Poison messages** -> DLQ + maxReceiveCount; alert on DLQ depth.
 - **Unlogged access** -> Enable ALB access logs + CloudTrail + CloudWatch logs/alarms.
 - **No HTTPS in transit** -> Add ACM cert + HTTPS listener; redirect HTTP to HTTPS.
+- **No VPC endpoints** -> Add VPC endpoints (S3, ECR, SQS, Secrets Manager, CloudWatch Logs) to reduce NAT cost and dependency.
 - **Uncontrolled changes** -> CDK-only changes with CI/CD approvals; deny console changes.
