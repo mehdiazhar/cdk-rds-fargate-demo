@@ -54,6 +54,12 @@ api:
   enableExecuteCommand: true
   enableCircuitBreaker: true
   circuitBreakerRollback: false
+  autoscaling:
+    enabled: true
+    minCapacity: 1
+    maxCapacity: 2
+    cpuTarget: 60
+    memoryTarget: 70
 
 sqs:
   queueName: "flexis-development-orders-queue"

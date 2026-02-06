@@ -23,4 +23,5 @@
 - **Data exfiltration** -> RDS in private subnets, SGs allow only ECS SG, no public access.
 - **Poison messages** -> DLQ + maxReceiveCount; alert on DLQ depth.
 - **Unlogged access** -> Enable ALB access logs + CloudTrail + CloudWatch logs/alarms.
+- **No HTTPS in transit** -> Add ACM cert + HTTPS listener; redirect HTTP to HTTPS.
 - **Uncontrolled changes** -> CDK-only changes with CI/CD approvals; deny console changes.

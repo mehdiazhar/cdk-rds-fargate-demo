@@ -4,7 +4,6 @@ from typing import Mapping, Any
 from aws_cdk import (
     RemovalPolicy,
     Stack,
-    CfnOutput,
     Fn,
     IgnoreMode,
     aws_ecs as ecs,
@@ -17,7 +16,6 @@ from aws_cdk import (
     Tags,
 )
 from constructs import Construct
-
 
 
 class FlexiOrderApiStack(Stack):
@@ -63,6 +61,7 @@ class FlexiOrderApiStack(Stack):
             security_group_id=Fn.import_value(f"flexis-sg-{env_name}-ecs-sg-id"),
             mutable=True,
         )
+
         db_host = Fn.import_value(f"flexis-rds-{env_name}-endpoint")
         db_port = Fn.import_value(f"flexis-rds-{env_name}-port")
         db_name = Fn.import_value(f"flexis-rds-{env_name}-dbname")
@@ -83,6 +82,13 @@ class FlexiOrderApiStack(Stack):
         enable_cb = bool(api_cfg.get("enableCircuitBreaker", True))
         # Never roll back automatically; keep failed tasks around for debugging.
         cb_rollback = False
+
+        autoscaling_cfg = api_cfg.get("autoscaling", {})
+        autoscaling_enabled = bool(autoscaling_cfg.get("enabled", True))
+        min_capacity = int(autoscaling_cfg.get("minCapacity", max(1, desired_count)))
+        max_capacity = int(autoscaling_cfg.get("maxCapacity", max(min_capacity, desired_count * 2)))
+        cpu_target = int(autoscaling_cfg.get("cpuTarget", 60))
+        memory_target = int(autoscaling_cfg.get("memoryTarget", 70))
 
         queue_arn = Fn.import_value(f"flexis-orders-{env_name}-queue-arn")
         queue_url = Fn.import_value(f"flexis-orders-{env_name}-queue-url")
@@ -193,6 +199,34 @@ class FlexiOrderApiStack(Stack):
                         rollback=cb_rollback,
                     )
                 )
+
+        if autoscaling_enabled and max_capacity > min_capacity:
+            scaling = service.auto_scale_task_count(
+                min_capacity=min_capacity,
+                max_capacity=max_capacity,
+            )
+            scaling.scale_on_cpu_utilization(
+                "CpuScaling",
+                target_utilization_percent=cpu_target,
+            )
+            scaling.scale_on_memory_utilization(
+                "MemoryScaling",
+                target_utilization_percent=memory_target,
+            )
+
+        target_group_arn = Fn.import_value(f"flexis-orders-{env_name}-tg-arn")
+        target_group = elbv2.ApplicationTargetGroup.from_target_group_attributes(
+            self,
+            "ImportedTargetGroup",
+            target_group_arn=target_group_arn,
+        )
+        target_group.add_target(
+            service.load_balancer_target(
+                container_name="api",
+                container_port=container_port,
+            )
+        )
+
         Tags.of(self).add("application", "flexicx")
         Tags.of(self).add("environment", env_name)
         Tags.of(self).add("product", "flexicx")

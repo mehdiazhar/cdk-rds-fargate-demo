@@ -52,6 +52,12 @@ api:
   enableExecuteCommand: false
   enableCircuitBreaker: true
   circuitBreakerRollback: true
+  autoscaling:
+    enabled: true
+    minCapacity: 2
+    maxCapacity: 6
+    cpuTarget: 55
+    memoryTarget: 65
 
 sqs:
   queueName: "flexicx-production-orders-queue"
