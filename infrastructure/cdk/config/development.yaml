@@ -37,10 +37,13 @@ readers:
   instanceSize: "MEDIUM"
 
 clusterParameters:
-  # baseline logging + SSL
+  # Enforce TLS for all client connections
   rds.force_ssl: "1"
+  # Log each new connection (helps audit and debugging)
   log_connections: "1"
+  # Log disconnects to track session churn
   log_disconnections: "1"
+  # Log slow queries taking >= 1000 ms
   log_min_duration_statement: "1000"
 
 api:

@@ -1,0 +1,60 @@
+account: "719164424367"
+region: "ap-southeast-2"
+
+# Shared naming prefix for all resources in this env
+namePrefix: "flexicx-staging"
+
+# Network sizing (staging should resemble prod but smaller)
+vpcCidr: "10.30.0.0/16" # staging-specific CIDR to avoid overlap
+maxAzs: 2               # HA without excess cost
+natGateways: 1          # cost-aware but still supports private egress
+publicSubnetMask: 24
+privateSubnetMask: 24
+
+# Database (Aurora PostgreSQL)
+dbName: "flexicxorders"
+dbUser: "flexicx_admin"
+engineMajorVersion: "17"
+engineFullVersion: "17.7"
+backupDays: 14                    # longer retention than dev
+preferredBackupWindow: "18:00-19:00"
+deletionProtection: true          # protect staging data
+
+# Performance/monitoring enabled for staging validation
+performanceInsightsEnabled: true
+performanceInsightsRetentionDays: 7
+monitoringIntervalSeconds: 60     # enhanced monitoring at 1-min granularity
+
+writer:
+  instanceClass: "T3"
+  instanceSize: "LARGE"           # more realistic capacity for staging
+
+readers:
+  count: 1                         # basic read scaling validation
+  instanceClass: "T3"
+  instanceSize: "LARGE"
+
+clusterParameters:
+  # Enforce TLS for all client connections
+  rds.force_ssl: "1"
+  # Log each new connection (helps audit and debugging)
+  log_connections: "1"
+  # Log disconnects to track session churn
+  log_disconnections: "1"
+  # Log slow queries taking >= 1000 ms
+  log_min_duration_statement: "1000"
+
+api:
+  cpu: 512
+  memory: 1024
+  desiredCount: 2                  # validate multi-task behavior
+  port: 8080
+  enableExecuteCommand: false
+  enableCircuitBreaker: true
+  circuitBreakerRollback: true     # rollback in staging to test deployment safety
+
+sqs:
+  queueName: "flexicx-staging-orders-queue"
+  visibilityTimeout: 30
+  retentionDays: 7
+  maxReceiveCount: 5

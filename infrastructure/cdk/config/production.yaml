@@ -1,0 +1,60 @@
+account: "719164424367"
+region: "ap-southeast-2"
+
+# Shared naming prefix for all resources in this env
+namePrefix: "flexicx-production"
+
+# Network sizing (higher availability for prod)
+vpcCidr: "10.40.0.0/16" # prod-specific CIDR
+maxAzs: 3               # multi-AZ resilience
+natGateways: 2          # HA for outbound traffic
+publicSubnetMask: 24
+privateSubnetMask: 24
+
+# Database (Aurora PostgreSQL)
+dbName: "flexicxorders"
+dbUser: "flexicx_admin"
+engineMajorVersion: "17"
+engineFullVersion: "17.7"
+backupDays: 30                    # longer retention for prod
+preferredBackupWindow: "18:00-19:00"
+deletionProtection: true          # protect prod data
+
+# Performance/monitoring enabled for prod
+performanceInsightsEnabled: true
+performanceInsightsRetentionDays: 731  # long-term retention
+monitoringIntervalSeconds: 60          # enhanced monitoring
+
+writer:
+  instanceClass: "T3"
+  instanceSize: "XLARGE"          # baseline prod capacity
+
+readers:
+  count: 2                         # read scalability and failover
+  instanceClass: "T3"
+  instanceSize: "XLARGE"
+
+clusterParameters:
+  # Enforce TLS for all client connections
+  rds.force_ssl: "1"
+  # Log each new connection (helps audit and debugging)
+  log_connections: "1"
+  # Log disconnects to track session churn
+  log_disconnections: "1"
+  # Log slow queries taking >= 1000 ms
+  log_min_duration_statement: "1000"
+
+api:
+  cpu: 1024
+  memory: 2048
+  desiredCount: 2                  # minimum HA
+  port: 8080
+  enableExecuteCommand: false
+  enableCircuitBreaker: true
+  circuitBreakerRollback: true
+
+sqs:
+  queueName: "flexicx-production-orders-queue"
+  visibilityTimeout: 30
+  retentionDays: 14
+  maxReceiveCount: 5
