@@ -35,7 +35,7 @@ flexicx/
    ```
 3. Bootstrap the sandbox account (first time only):
    ```sh
-   cdk bootstrap aws://719164424367/ap-southeast-2
+   cdk bootstrap aws://12345678610/ap-southeast-2
    ```
 4. Deploy:
    ```sh
