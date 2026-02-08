@@ -1,4 +1,4 @@
-# Flexicx Order Processing (Sandbox)
+# Flexi Order Processing
 
 This folder contains a minimal order-processing demo (Flask) plus a Python CDK app that provisions:
 - RDS Postgres (single instance)
